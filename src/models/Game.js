@@ -20,7 +20,7 @@ module.exports = class Game {
 
     this.isGuessed = () => !this.word.filter(letter => !this.guesses.includes(letter)).length;
     this.isLost = () => this.wrongGuesses() >= 6;
-    this.wrongGuesses = () => this.guesses.reduce((acc, guess) => acc + (this.word.includes(guess) ? 0 : 1), 0);
+    this.wrongGuesses = () => this.guesses.reduce((acc, guess) => acc + !this.word.includes(guess), 0);
 
     this.guessLetter = (letter) => {
       if (!(this.isGuessed() || this.isLost())) {
