@@ -2,10 +2,10 @@ body {
   font-family: "Segoe UI", sans-serif;
 }
 
-.right-guess {
+.true-guess {
   color: green;
 }
 
-.wrong-guess {
+.false-guess {
   color: red;
 }

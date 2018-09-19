@@ -3,36 +3,50 @@ const $ = require('jquery');
 const Game = require('../models/Game');
 const words = require('../data/words');
 
-const index = {
+const app = {
   game: new Game(words[Math.floor(Math.random() * words.length)]),
+  guesses: [],
 
   init: function () {
-    $( 'button#start' ).on('click', index.start);
-    $( 'input#guess' ).on('keyup', index.guess);
+    $( 'button#start' ).on('click', app.start);
+    $( 'input#guess' ).on('keyup', app.guess);
 
-    index.updateDisplay();
+    app.updateDisplay();
   },
 
   start: function () {
-    index.game = new Game(words[Math.floor(Math.random() * words.length)]);
-    $( 'p#info' ).html(index.game.INFO.default);
-    index.updateDisplay();
+    app.guesses = [];
+    app.game = new Game(words[Math.floor(Math.random() * words.length)]);
+    $( 'p#info' ).html(app.game.INFO.default);
+    app.updateDisplay();
   },
 
   guess: function () {
-    $( 'p#info' ).html(index.game.guessLetter($(this).val()));
+
+    const addGuess = letter => {
+      if (!app.game.hasEnded(app.guesses)) {
+        console.log(letter);
+        if (app.guesses.includes(letter)) return app.game.INFO.duplicate(letter);
+        app.guesses.push(letter)
+        return app.game.winCondition(app.guesses);
+      }
+    };
+
+    $( 'p#info' ).html(addGuess($(this).val()));
     $(this).val('');
-    index.updateDisplay();
+    app.updateDisplay();
   },
 
+
+
   updateDisplay: function () {
-    $( 'p#word' ).html(index.game.DISPLAY.word());
-    $( 'p#guesses' ).html(index.game.DISPLAY.letters());
-    $( 'div#hangman' ).html(index.game.DISPLAY.guesses())
+    $( 'p#word' ).html(app.game.DISPLAY.word(app.guesses));
+    $( 'p#guesses' ).html(app.game.DISPLAY.letters(app.guesses));
+    $( 'div#hangman' ).html(app.game.DISPLAY.guesses(app.guesses))
   }
 
 };
 
 $(document).ready(function () {
-  index.init();
+  app.init();
 });
